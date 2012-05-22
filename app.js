@@ -8,7 +8,7 @@ $(window).load(function() {
       minimumSimilarity: 0.6,
       maximumResults: 4,
       searchTimeout: 8000,
-      loadingModal: $("#loadingModal")
+      loadingModal: $("#loadingModal").modal({backdrop: "static", keyboard: false, show: false})
     });
 
     App.Result = Ember.Object.extend({
@@ -30,8 +30,10 @@ $(window).load(function() {
         return App.maximumResults;
       },
       search: function(){
+        if (this.get("isInvalid")) {
+          return;
+        }
         console.log('search for %@'.fmt( this.get('searchText') ));
-        
         
         var baysUrl = App.host + "/v2/bays.json?visit.plate.text=" + this.get("searchText") + "~" + this.get("similarity") + "&is_occupied=true&order=-similarity&limit=" + this.get("limit");
         
@@ -44,7 +46,7 @@ $(window).load(function() {
           context: this,
           error: function () { },
           beforeSend: function () { App.loadingModal.modal('show'); },
-          complete: function () { App.loadingModal.modal('hide'); },
+          complete: function () { setTimeout(function() { App.loadingModal.modal('hide'); }, 1000); },
           success: function (data) {
             var results = [];
             $.each(data, function() {
@@ -78,6 +80,7 @@ $(window).load(function() {
 
     App.ResultView = Ember.View.extend({
         content: null,
+        tagName: "li",
         adjustedIndex: function() {
             return this.getPath('_parentView.contentIndex') + 1;
         }.property(),

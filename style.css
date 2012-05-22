@@ -35,24 +35,23 @@ p { text-align: center;}
 */
 #results ol { position: relative; list-style-type: none; margin:0; }
 #results .result-header {
-  /* Position and style the number */
   position:absolute;
+}
+#results .result-footer {
+  position:absolute;
+  bottom: 25px;
+  left: 25px;
+  right: 25px;
+}
+#results .result-footer .btn {
+  width: 100%;
 }
 #results li {
     position: relative;
-    margin: 1em;
 }
 #results img { 
   width: 100%; 
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  margin-bottom: 4px;
-}
-#results .btn {
-  width: 100%;
-}
-#results .pagination { margin-top: 0 }
-#results .pagination ul {
-  background: white;
 }

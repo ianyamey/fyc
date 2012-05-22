@@ -3,17 +3,21 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FYC</title>
-  
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
 
   <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
-      <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css">
-      <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
-<script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
-    <script type='text/javascript' src="app.js"></script>
-    <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
-    
+  <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
+  <script type='text/javascript' src="app.js"></script>
+  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
+
 </head>
 <body>
   <div class="navbar navbar-fixed-top">
@@ -25,8 +29,10 @@
 </div>
 
 <section id="search" class="step step1 container-fluid">
-  <h1>Search</h1>
-  <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
+  <header>
+    <h1>Search</h1>
+    <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
+  </header>
   <script type="text/x-handlebars">
     {{#view App.KeyboardView}}
 
@@ -88,39 +94,44 @@
     </script> 
 </section>
 <section id="results" class="step step2 container-fluid">
-  <h1>Results</h1>
+
   <script type="text/x-handlebars">
-    <h3>Search Results for {{App.searchController.searchText}}</h3>
-    <ol class="well container-fluid">
+    <header class="jumbotron masthead">
+      <h1>Results</h1>
+      <p class="alert alert-info">Here are the matching results for your search for {{App.searchController.searchText}}</p>
+    </header>
+    <div class="container-fluid">
+    <h3>Select your vehicle:</h3>
+    <ol class="">
       {{#each App.searchController}}
-        {{#view App.ResultView resultBinding="this"}}
-        <li class="span4" {{action "resultClicked" on="click"}}>
+        {{#view App.ResultView resultBinding="this" class="well span4"}}
           <div class="result-header">
             <span class="label label-inverse">{{adjustedIndex}} of {{App.searchController.content.length}}</span>
             <span class="label label-info">{{result.visit.plate.text}}</span>
             <span class="label label-success">{{result.zone.name}}</span>
           </div>
-          <img {{bindAttr src="result.image"}}/>
-          <button class="btn btn-info">This is my car &rarr;</button>
-        </li>
+          <img {{action "resultClicked"}} {{bindAttr src="result.image"}}/>
+          <div class="result-footer">
+            <button  {{action "resultClicked"}} class="btn btn-info">This is my car &rarr;</button>
+          </div>
         {{/view}}
       {{/each}}
-    </ol>    
+      <li class="span12"><button class="btn btn-warning">My vehicle is not in this list</button></li>
+    </ol>
+    </div>
   </script>
 </section>
-<div id="loadingModal" style="display:none">
-  <div class="modal" id="myModal">
+<div id="loadingModal" class="modal fade" style="display:none">
+  <script type="text/x-handlebars">
     <div class="modal-header">
-      <button class="close" data-dismiss="modal">×</button>
-      <h3>Modal header</h3>
+      <h3>Loading&hellip;</h3>
     </div>
     <div class="modal-body">
-      <p>Loading&hellip;</p>
+      <p>Searching for vehicles with license plates similar to {{App.searchController.searchText}}</p>
     </div>
     <div class="modal-footer">
     </div>
-  </div>
+  </script>        
 </div>
-        
 </body>
 </html>
