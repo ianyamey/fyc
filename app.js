@@ -7,7 +7,8 @@ $(window).load(function() {
       host: "data",
       minimumSimilarity: 0.6,
       maximumResults: 4,
-      searchTimeout: 8000
+      searchTimeout: 8000,
+      loadingModal: $("#loadingModal")
     });
 
     App.Result = Ember.Object.extend({
@@ -42,12 +43,11 @@ $(window).load(function() {
           timeout: App.searchTimeout,
           context: this,
           error: function () { },
-          beforeSend: function () { },
-          complete: function () { },
+          beforeSend: function () { App.loadingModal.modal('show'); },
+          complete: function () { App.loadingModal.modal('hide'); },
           success: function (data) {
             var results = [];
             $.each(data, function() {
-              console.log(this)
               results.push(App.Result.create(this));
             });
             this.set('content', results);

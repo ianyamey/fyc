@@ -12,6 +12,7 @@
   <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
 <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
     <script type='text/javascript' src="app.js"></script>
+    <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
     
 </head>
 <body>
@@ -24,6 +25,7 @@
 </div>
 
 <section id="search" class="step step1 container-fluid">
+  <h1>Search</h1>
   <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
   <script type="text/x-handlebars">
     {{#view App.KeyboardView}}
@@ -78,7 +80,7 @@
     
     <div class="form-vertical form-search well">
       {{view App.SearchView target="App.searchController" action="search" class="search-query" placeholder="Enter your license plate"}}
-      <button {{action "search" target="App.searchController"}} {{bindAttr disabled="invalidQuery"}} class="btn btn-primary btn-large">
+      <button {{action "search" target="App.searchController"}} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-primary btn-large">
         <i class="icon-search icon-white"></i> Search &rarr;
       </button>
     </div> 
@@ -86,7 +88,9 @@
     </script> 
 </section>
 <section id="results" class="step step2 container-fluid">
+  <h1>Results</h1>
   <script type="text/x-handlebars">
+    <h3>Search Results for {{App.searchController.searchText}}</h3>
     <ol class="well container-fluid">
       {{#each App.searchController}}
         {{#view App.ResultView resultBinding="this"}}
@@ -104,6 +108,19 @@
     </ol>    
   </script>
 </section>
+<div id="loadingModal" style="display:none">
+  <div class="modal" id="myModal">
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">×</button>
+      <h3>Modal header</h3>
+    </div>
+    <div class="modal-body">
+      <p>Loading&hellip;</p>
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div>
+</div>
         
 </body>
 </html>
