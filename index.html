@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>FYC</title>
+  
+
+  <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
+      <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css">
+      <link rel="stylesheet" type="text/css" href="style.css">
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+<script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
+    <script type='text/javascript' src="app.js"></script>
+    
+</head>
+<body>
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+    <div class="container">
+      <h1>Find Your Car</h1>
+    </div>
+  </div>
+</div>
+
+<section id="search" class="step step1 container-fluid">
+  <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
+  <script type="text/x-handlebars">
+    {{#view App.KeyboardView}}
+
+    <div id="keyboard">
+      <p>
+        <button data-role="button" {{action "append"}} class="btn number">1</button> 
+        <button data-role="button" {{action "append"}} class="btn number">2</button> 
+        <button data-role="button" {{action "append"}} class="btn number">3</button> 
+        <button data-role="button" {{action "append"}} class="btn number">4</button> 
+        <button data-role="button" {{action "append"}} class="btn number">5</button> 
+        <button data-role="button" {{action "append"}} class="btn number">6</button> 
+        <button data-role="button" {{action "append"}} class="btn number">7</button> 
+        <button data-role="button" {{action "append"}} class="btn number">8</button> 
+        <button data-role="button" {{action "append"}} class="btn number">9</button> 
+        <button data-role="button" {{action "append"}} class="btn number">0</button>
+        <button data-role="button" {{action "backspace"}} class="btn backspace">&nbsp;&larr;&nbsp;</button>
+      </p>
+      <p>
+        <button data-role="button" {{action "append"}} class="btn letter">Q</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">W</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">E</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">R</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">T</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">Y</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">U</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">I</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">O</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">P</button> 
+      </p>
+      <p>
+        <button data-role="button" {{action "append"}} class="btn letter">A</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">S</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">D</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">F</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">G</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">H</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">J</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">K</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">L</button> 
+      </p>
+      <p>
+        <button data-role="button" {{action "append"}} class="btn letter">Z</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">X</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">C</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">V</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">B</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">N</button> 
+        <button data-role="button" {{action "append"}} class="btn letter">M</button>
+      </p>
+    </div>
+    
+    <div class="form-vertical form-search well">
+      {{view App.SearchView target="App.searchController" action="search" class="search-query" placeholder="Enter your license plate"}}
+      <button {{action "search" target="App.searchController"}} {{bindAttr disabled="invalidQuery"}} class="btn btn-primary btn-large">
+        <i class="icon-search icon-white"></i> Search &rarr;
+      </button>
+    </div> 
+    {{/view}}
+    </script> 
+</section>
+<section id="results" class="step step2 container-fluid">
+  <script type="text/x-handlebars">
+    <ol class="well container-fluid">
+      {{#each App.searchController}}
+        {{#view App.ResultView resultBinding="this"}}
+        <li class="span4" {{action "resultClicked" on="click"}}>
+          <div class="result-header">
+            <span class="label label-inverse">{{adjustedIndex}} of {{App.searchController.content.length}}</span>
+            <span class="label label-info">{{result.visit.plate.text}}</span>
+            <span class="label label-success">{{result.zone.name}}</span>
+          </div>
+          <img {{bindAttr src="result.image"}}/>
+          <button class="btn btn-info">This is my car &rarr;</button>
+        </li>
+        {{/view}}
+      {{/each}}
+    </ol>    
+  </script>
+</section>
+        
+</body>
+</html>
