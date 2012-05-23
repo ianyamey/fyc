@@ -12,9 +12,16 @@ $(window).load(function() {
     });
 
     App.Result = Ember.Object.extend({
-        image: function() {
-            return App.host + "/v2/visits/" + this.getPath("visit.id") + "/entry.jpg";
-        }.property('visit.id')
+      imageUrl: function() {
+        return App.host + "/v2/visits/" + this.getPath("visit.id") + "/entry.jpg";
+      }.property('visit.id'),
+      mapUrl: function() {
+        return App.host + "/v2/maps/" + this.getPath("map.name") + ".png";
+      }.property('map.name')
+    });
+
+    App.Map = Ember.Object.extend({
+      
     });
 
     App.searchController = Ember.ArrayController.create({
@@ -29,10 +36,14 @@ $(window).load(function() {
       limit: function() {
         return App.maximumResults;
       },
+      isSearching: false,
       search: function(){
+        var self = this;
         if (this.get("isInvalid")) {
           return;
         }
+        this.set("isSearching", true);
+        
         console.log('search for %@'.fmt( this.get('searchText') ));
         
         var baysUrl = App.host + "/v2/bays.json?visit.plate.text=" + this.get("searchText") + "~" + this.get("similarity") + "&is_occupied=true&order=-similarity&limit=" + this.get("limit");
@@ -43,20 +54,33 @@ $(window).load(function() {
           url: baysUrl,
           crossDomain: true,
           timeout: App.searchTimeout,
-          context: this,
           error: function () { },
-          beforeSend: function () { App.loadingModal.modal('show'); },
-          complete: function () { setTimeout(function() { App.loadingModal.modal('hide'); }, 1000); },
+          beforeSend: function () { },
+          complete: function() { self.set("isSearching", false); },
           success: function (data) {
             var results = [];
             $.each(data, function() {
-              results.push(App.Result.create(this));
+              results.push(self.createContactFromJSON(this));
             });
-            this.set('content', results);
+            App.resultListController.set('content', results);
           }
         });
-        
+      },
+      createContactFromJSON: function(json) {
+        return App.Result.create(json);
       }
+    });
+    
+    App.resultListController = Ember.ArrayController.create({
+      content: [],
+      selected: null,
+      searchTextBinding: 'App.searchController.searchText'
+    });
+
+    App.mapController = Ember.Object.create({
+      contentBinding: 'App.resultListController.selected',
+      imageUrlBinding: 'content.selected.map',
+      
     });
 
     App.SearchView = Ember.TextField.extend(Ember.TargetActionSupport, {
@@ -67,7 +91,6 @@ $(window).load(function() {
     });
 
     App.KeyboardView = Ember.View.extend({
-        content: null,
         append: function(event) {
             var query = App.searchController.get('searchText') + $(event.target).text();
             App.searchController.set('searchText', query);
@@ -84,11 +107,9 @@ $(window).load(function() {
         adjustedIndex: function() {
             return this.getPath('_parentView.contentIndex') + 1;
         }.property(),
-        resultClicked: function() {
-            console.log(this.getPath('result.visit.id'));
+        click: function(event) {
+          App.resultListController.set("selected", this.get("content"));
         }
     });
-
-
-
+    
 });

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,6 +33,7 @@
     <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
   </header>
   <script type="text/x-handlebars">
+    {{#with App.searchController }}
     {{#view App.KeyboardView}}
 
     <div id="keyboard">
@@ -85,42 +85,56 @@
     </div>
     
     <div class="form-vertical form-search well">
-      {{view App.SearchView target="App.searchController" action="search" class="search-query" placeholder="Enter your license plate"}}
-      <button {{action "search" target="App.searchController"}} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-primary btn-large">
+      {{view App.SearchView action="search" class="search-query" placeholder="Enter your license plate"}}
+      <button {{action "search" target="App.searchController" }} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-primary btn-large">
         <i class="icon-search icon-white"></i> Search &rarr;
       </button>
     </div> 
     {{/view}}
+    {{/with}}
     </script> 
 </section>
 <section id="results" class="step step2 container-fluid">
-
   <script type="text/x-handlebars">
     <header class="jumbotron masthead">
       <h1>Results</h1>
-      <p class="alert alert-info">Here are the matching results for your search for {{App.searchController.searchText}}</p>
+      <p class="alert alert-info">Here are the matching results for your search for {{App.resultListController.searchText}}</p>
     </header>
     <div class="container-fluid">
-    <h3>Select your vehicle:</h3>
-    <ol class="">
-      {{#each App.searchController}}
-        {{#view App.ResultView resultBinding="this" class="well span4"}}
-          <div class="result-header">
-            <span class="label label-inverse">{{adjustedIndex}} of {{App.searchController.content.length}}</span>
-            <span class="label label-info">{{result.visit.plate.text}}</span>
-            <span class="label label-success">{{result.zone.name}}</span>
-          </div>
-          <img {{action "resultClicked"}} {{bindAttr src="result.image"}}/>
-          <div class="result-footer">
-            <button  {{action "resultClicked"}} class="btn btn-info">This is my car &rarr;</button>
-          </div>
-        {{/view}}
-      {{/each}}
-      <li class="span12"><button class="btn btn-warning">My vehicle is not in this list</button></li>
-    </ol>
+      <h3>Select your vehicle:</h3>
+      <ol>
+        {{#each App.resultListController}}
+          {{#view App.ResultView contentBinding="this" class="well span4"}}
+            <div class="result-header">
+              <span class="label label-inverse">{{adjustedIndex}} of {{controller.content.length}}</span>
+              <span class="label label-info">{{content.visit.plate.text}}</span>
+              <span class="label label-success">{{content.zone.name}}</span>
+            </div>
+            <img {{bindAttr src="content.imageUrl"}}/>
+            <div class="result-footer">
+              <button class="btn btn-info">This is my car &rarr;</button>
+            </div>
+          {{/view}}
+        {{/each}}
+        <li class="span12"><button class="btn btn-warning">My vehicle is not in this list</button></li>
+      </ol>
     </div>
   </script>
 </section>
+<section id="map" class="step step3 container-fluid">
+  <script type="text/x-handlebars">
+    {{#with App.mapController}}
+      <header class="jumbotron masthead">
+        <h1>Map</h1>
+        <p class="alert alert-info">Your vehicle is on {{content.zone.name}}</p>
+      </header>
+      <div>
+        <img {{bindAttr src="content.mapUrl"}}/>
+      </div>
+    {{/with}}
+  </script>
+</section>
+
 <div id="loadingModal" class="modal fade" style="display:none">
   <script type="text/x-handlebars">
     <div class="modal-header">
