@@ -121,25 +121,29 @@ App.stateManager = Ember.StateManager.create({
 
   searchPage: Ember.ViewState.create({
     view: Ember.View.create({
-      templateName: "search"
+      templateName: "search",
+      layoutName: "layout"
     })
   }),
  
   resultsPage: Ember.ViewState.create({
     view: Ember.View.create({
-      templateName: "results"
+      templateName: "results",
+      layoutName: "layout"
     }),
   }),
 
   noResultsPage: Ember.ViewState.create({
     view: Ember.View.create({
-      templateName: "no-results"
+      templateName: "no-results",
+      layoutName: "layout"
     })
   }),
   
   mapPage: Ember.ViewState.create({
     view: Ember.View.create({
       templateName: "map",
+      layoutName: "layout",
       contentBinding: "App.resultsController.selected",
       scale: 0.5,
       markerStyle: function() {
