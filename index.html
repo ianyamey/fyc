@@ -11,144 +11,160 @@
   <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
-  <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
-  <script type='text/javascript' src="javascripts/app.js"></script>
-  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
-  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
 
 </head>
 <body>
-  <div class="navbar navbar-fixed-top">
-     <div class="navbar-inner">
-    <div class="container">
-      <h1>Find Your Car</h1>
-    </div>
-  </div>
-</div>
-
-<section id="search" class="step step1 container-fluid">
-  <header>
-    <h1>Search</h1>
-    <p class="alert alert-info">Search for your vehicle by typing in your license plate below</p>
-  </header>
   <script type="text/x-handlebars">
-    {{#with App.searchController }}
-    {{#view App.KeyboardView}}
-
-    <div id="keyboard">
-      <p>
-        <button data-role="button" {{action "append"}} class="btn number">1</button> 
-        <button data-role="button" {{action "append"}} class="btn number">2</button> 
-        <button data-role="button" {{action "append"}} class="btn number">3</button> 
-        <button data-role="button" {{action "append"}} class="btn number">4</button> 
-        <button data-role="button" {{action "append"}} class="btn number">5</button> 
-        <button data-role="button" {{action "append"}} class="btn number">6</button> 
-        <button data-role="button" {{action "append"}} class="btn number">7</button> 
-        <button data-role="button" {{action "append"}} class="btn number">8</button> 
-        <button data-role="button" {{action "append"}} class="btn number">9</button> 
-        <button data-role="button" {{action "append"}} class="btn number">0</button>
-        <button data-role="button" {{action "backspace"}} class="btn backspace">&nbsp;&larr;&nbsp;</button>
-      </p>
-      <p>
-        <button data-role="button" {{action "append"}} class="btn letter">Q</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">W</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">E</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">R</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">T</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">Y</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">U</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">I</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">O</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">P</button> 
-      </p>
-      <p>
-        <button data-role="button" {{action "append"}} class="btn letter">A</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">S</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">D</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">F</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">G</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">H</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">J</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">K</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">L</button> 
-      </p>
-      <p>
-        <button data-role="button" {{action "append"}} class="btn letter">Z</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">X</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">C</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">V</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">B</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">N</button> 
-        <button data-role="button" {{action "append"}} class="btn letter">M</button>
-      </p>
-    </div>
-    {{/view}}
-    
-    <div class="form-vertical form-search well">
-      {{view App.SearchView action="search" class="search-query" placeholder="Enter your license plate"}}
-      <button {{action "search" target="App.searchController" }} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-primary btn-large">
-        <i class="icon-search icon-white"></i> Search &rarr;
-      </button>
-    </div> 
-    
-    <div id="loadingModal" {{bindAttr class="App.searchController.isSearching"}}>
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Loading&hellip;</h3>
-        </div>
-        <div class="modal-body">
-          <p>Searching for vehicles with license plates similar to {{App.searchController.searchText}}</p>
-          <p class="loading"></p>
-        </div>
-        <div class="modal-footer">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <h1>{{t app.name}}</h1>
         </div>
       </div>
     </div>
+  </script>
   
-    {{/with}}
+  <section id="search" class="step step1 container-fluid">
+    <script type="text/x-handlebars">
+      {{#unless App.resultListController.content.length}}
+        {{#with App.searchController }}
+        
+          <header>
+            <h1>{{t search.heading}}</h1>
+            <p class="alert alert-info">{{t search.instructions}}</p>
+          </header>
+            {{#view App.KeyboardView}}
+        
+            <div id="keyboard">
+              <p>
+                <button data-role="button" {{action "append"}} class="btn number">1</button> 
+                <button data-role="button" {{action "append"}} class="btn number">2</button> 
+                <button data-role="button" {{action "append"}} class="btn number">3</button> 
+                <button data-role="button" {{action "append"}} class="btn number">4</button> 
+                <button data-role="button" {{action "append"}} class="btn number">5</button> 
+                <button data-role="button" {{action "append"}} class="btn number">6</button> 
+                <button data-role="button" {{action "append"}} class="btn number">7</button> 
+                <button data-role="button" {{action "append"}} class="btn number">8</button> 
+                <button data-role="button" {{action "append"}} class="btn number">9</button> 
+                <button data-role="button" {{action "append"}} class="btn number">0</button>
+                <button data-role="button" {{action "backspace"}} class="btn backspace">&nbsp;&larr;&nbsp;</button>
+              </p>
+              <p>
+                <button data-role="button" {{action "append"}} class="btn letter">Q</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">W</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">E</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">R</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">T</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">Y</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">U</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">I</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">O</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">P</button> 
+              </p>
+              <p>
+                <button data-role="button" {{action "append"}} class="btn letter">A</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">S</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">D</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">F</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">G</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">H</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">J</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">K</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">L</button> 
+              </p>
+              <p>
+                <button data-role="button" {{action "append"}} class="btn letter">Z</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">X</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">C</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">V</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">B</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">N</button> 
+                <button data-role="button" {{action "append"}} class="btn letter">M</button>
+              </p>
+            </div>
+            {{/view}}
+            
+            <div class="form-vertical form-search well">
+              <input type="text" {{bindAttr value="App.searchController.searchText"}} placeholder="{{t search.placeholder}}"/>
+              <button {{action "search" target="App.searchController" }} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-primary btn-large">
+                <i class="icon-search icon-white"></i> {{t search.button }} &rarr;
+              </button>
+            </div> 
+            
+            <div id="loadingModal" {{bindAttr class="App.searchController.isSearching"}}>
+              <div class="modal">
+                <div class="modal-header">
+                  <h3>{{t loading.heading}}</h3>
+                </div>
+                <div class="modal-body">
+                  <p>{{t loading.text }} '{{App.searchController.searchText}}'</p>
+                  <p class="loading"></p>
+                </div>
+                <div class="modal-footer">
+                </div>
+              </div>
+            </div>
+        
+          {{/with}}
+      {{/unless}}
     </script> 
-</section>
-<section id="results" class="step step2 container-fluid">
-  <script type="text/x-handlebars">
-    <header class="jumbotron masthead">
-      <h1>Results</h1>
-      <p class="alert alert-info">Here are the matching results for your search for {{App.resultListController.searchText}}</p>
-    </header>
-    <div class="container-fluid">
-      <h3>Select your vehicle:</h3>
-      <ol>
-        {{#each App.resultListController}}
-          {{#view App.ResultView contentBinding="this" class="well span4"}}
-            <div class="result-header">
-              <span class="label label-inverse">Result {{adjustedIndex}} of</span>
-              <span class="label label-info">License Plate: {{content.visit.plate.text}}</span>
-              <span class="label label-success">Location: {{content.zone.name}}</span>
-            </div>
-            <img {{bindAttr src="content.imageUrl"}}/>
-            <div class="result-footer">
-              <button class="btn btn-info">This is my car &rarr;</button>
-            </div>
-          {{/view}}
-        {{/each}}
-        <li class="span12"><button class="btn btn-warning">My vehicle is not in this list</button></li>
-      </ol>
-    </div>
-  </script>
-</section>
-<section id="map" class="step step3 container-fluid">
-  <script type="text/x-handlebars">
-    {{#with App.mapController}}
-      <header class="jumbotron masthead">
-        <h1>Map</h1>
-        <p class="alert alert-info">Your vehicle is on {{content.zone.name}}</p>
-      </header>
-      <div class="map">
-        {{#view App.MapView contentBinding="App.resultListController.selected"}}<img src="img/car.png" {{bindAttr style="markerStyle"}}/>{{/view}}
-        <img {{bindAttr src="content.mapUrl"}}/>
-      </div>
-    {{/with}}
-  </script>
-</section>
+  </section>
+  
+  <section id="results" class="step step2 container-fluid">
+    <script type="text/x-handlebars">
+      {{#if App.resultListController.content.length}}
+        {{#unless App.resultListController.selected}}
+          <header class="jumbotron masthead">
+            <h1>{{t results.heading}}</h1>
+            <p class="alert alert-info">{{t results.instructions }}. {{t results.searchQuery}}: {{App.resultListController.searchText}}</p>
+          </header>
+          <div class="container-fluid">
+            <ol>
+              {{#each App.resultListController}}
+                {{#view App.ResultView contentBinding="this" class="well span4"}}
+                  <div class="result-header">
+                    <span class="label label-inverse">{{t labels.result}} {{adjustedIndex}}</span>
+                    <span class="label label-info">{{t labels.plate}}: {{content.visit.plate.text}}</span>
+                    <span class="label label-success">{{t labels.location}}: {{content.zone.name}}</span>
+                  </div>
+                  <img {{bindAttr src="content.imageUrl"}}/>
+                  <div class="result-footer">
+                    <button class="btn btn-info">{{t results.select}} &rarr;</button>
+                  </div>
+                {{/view}}
+              {{/each}}
+              <li class="span12"><button class="btn btn-warning">{{t results.reject}}</button></li>
+            </ol>
+          </div>
+        {{/unless}}
+      {{/if}}
+    </script>
+  </section>
+  
+  <section id="map" class="step step3 container-fluid">
+    <script type="text/x-handlebars">
+    {{#if App.resultListController.selected }}
+      {{#with App.mapController}}
+        <header class="jumbotron masthead">
+          <h1>{{t map.heading}}</h1>
+          <p class="alert alert-info">{{t map.info}} {{content.zone.name}}</p>
+        </header>
+        <div class="map">
+          {{#view App.MapView contentBinding="App.resultListController.selected"}}<div class="marker" {{bindAttr style="markerStyle"}}><img src="img/car.png"/></div>{{/view}}
+          <img {{bindAttr src="content.mapUrl"}}/>
+        </div>
+      {{/with}}
+    {{/if}}
+    </script>
+  </section>
+
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+  <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
+  <script type='text/javascript' src="https://raw.github.com/fnando/i18n-js/master/vendor/assets/javascripts/i18n.js"></script>
+  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+  <script type='text/javascript' src="javascripts/translations.js"></script>
+  <script type='text/javascript'>I18n.locale = 'en';</script>
+  <script type='text/javascript' src="javascripts/app.js"></script>
+
 </body>
 </html>
