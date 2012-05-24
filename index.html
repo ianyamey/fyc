@@ -10,10 +10,10 @@
 
   <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
   <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
   <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
-  <script type='text/javascript' src="app.js"></script>
+  <script type='text/javascript' src="javascripts/app.js"></script>
   <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
   <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
 
@@ -83,6 +83,7 @@
         <button data-role="button" {{action "append"}} class="btn letter">M</button>
       </p>
     </div>
+    {{/view}}
     
     <div class="form-vertical form-search well">
       {{view App.SearchView action="search" class="search-query" placeholder="Enter your license plate"}}
@@ -90,7 +91,21 @@
         <i class="icon-search icon-white"></i> Search &rarr;
       </button>
     </div> 
-    {{/view}}
+    
+    <div id="loadingModal" {{bindAttr class="App.searchController.isSearching"}}>
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Loading&hellip;</h3>
+        </div>
+        <div class="modal-body">
+          <p>Searching for vehicles with license plates similar to {{App.searchController.searchText}}</p>
+          <p class="loading"></p>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  
     {{/with}}
     </script> 
 </section>
@@ -106,9 +121,9 @@
         {{#each App.resultListController}}
           {{#view App.ResultView contentBinding="this" class="well span4"}}
             <div class="result-header">
-              <span class="label label-inverse">{{adjustedIndex}} of {{controller.content.length}}</span>
-              <span class="label label-info">{{content.visit.plate.text}}</span>
-              <span class="label label-success">{{content.zone.name}}</span>
+              <span class="label label-inverse">Result {{adjustedIndex}} of</span>
+              <span class="label label-info">License Plate: {{content.visit.plate.text}}</span>
+              <span class="label label-success">Location: {{content.zone.name}}</span>
             </div>
             <img {{bindAttr src="content.imageUrl"}}/>
             <div class="result-footer">
@@ -128,24 +143,12 @@
         <h1>Map</h1>
         <p class="alert alert-info">Your vehicle is on {{content.zone.name}}</p>
       </header>
-      <div>
+      <div class="map">
+        {{#view App.MapView contentBinding="App.resultListController.selected"}}<img src="img/car.png" {{bindAttr style="markerStyle"}}/>{{/view}}
         <img {{bindAttr src="content.mapUrl"}}/>
       </div>
     {{/with}}
   </script>
 </section>
-
-<div id="loadingModal" class="modal fade" style="display:none">
-  <script type="text/x-handlebars">
-    <div class="modal-header">
-      <h3>Loading&hellip;</h3>
-    </div>
-    <div class="modal-body">
-      <p>Searching for vehicles with license plates similar to {{App.searchController.searchText}}</p>
-    </div>
-    <div class="modal-footer">
-    </div>
-  </script>        
-</div>
 </body>
 </html>
