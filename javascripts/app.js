@@ -19,7 +19,6 @@ var App = Ember.Application.create({
   ready: function() {
     $("#loadingModal").modal({backdrop: "static", keyboard: false, show: false});
   }
-
 });
 
 App.Result = Ember.Object.extend({
@@ -34,6 +33,7 @@ App.Result = Ember.Object.extend({
 
 App.searchController = Ember.ArrayController.create({
   content: null,
+  reset: function() { this.set("searchText", ""); },
   searchText: "",
   isInvalid: function() {
     return this.get('searchText').length < App.minimumSearchLength;
@@ -44,10 +44,7 @@ App.searchController = Ember.ArrayController.create({
   limit: function() {
     return App.maximumResults;
   },
-  noResults: function() {
-    App.resultListController.set("noResults", true);
-  },
-  search: function(){
+  search: function(callback){
     var self = this;
     if (this.get("isInvalid")) {
       return;
@@ -58,7 +55,6 @@ App.searchController = Ember.ArrayController.create({
     
     var baysUrl = App.host + "/v2/bays.json?visit.plate.text=" + this.get("searchText") + "~" + this.get("similarity") + "&is_occupied=true&order=-similarity&limit=" + this.get("limit");
     
-    setTimeout(function() {
     $.ajax({
       dataType: 'json',
       url: baysUrl,
@@ -73,34 +69,30 @@ App.searchController = Ember.ArrayController.create({
           results.push(self.createContactFromJSON(this));
         });
         if (results.length >= 1) {
-          App.resultListController.set('content', results);
+          App.resultsController.set('content', results);
+          App.stateManager.goToState('resultsPage');
         } else {
-          self.noResults();
+          App.stateManager.goToState('noResultsPage');
         }
       }
     });
-    }, 500);
   },
   createContactFromJSON: function(json) {
     return App.Result.create(json);
   }
 });
 
-App.resultListController = Ember.ArrayController.create({
+App.resultsController = Ember.ArrayController.create({
   content: [],
+  reset: function() { this.set("content", []); this.set("selected", null); },
   selected: null,
   searchTextBinding: 'App.searchController.searchText'
 });
 
 App.mapController = Ember.Object.create({
-  contentBinding: 'App.resultListController.selected'
+  contentBinding: 'App.resultsController.selected'
 });
 
-App.ResultsView = Ember.View.extend({
-  noResults: function(event) {
-    App.resultListController.set("noResults", true)
-  }
-});
 App.KeyboardView = Ember.View.extend({
     append: function(event) {
         var query = App.searchController.get('searchText') + $(event.target).text();
@@ -112,25 +104,59 @@ App.KeyboardView = Ember.View.extend({
     }
 });
 
+
 App.ResultView = Ember.View.extend({
     content: null,
     adjustedIndex: function() {
-        return this.getPath('_parentView.contentIndex') + 1;
+      return this.getPath('_parentView.contentIndex') + 1;
     }.property(),
     click: function(event) {
-      App.resultListController.set("selected", this.get("content"));
+      App.resultsController.set("selected", this.get("content"));
+      App.stateManager.goToState("mapPage");
     }
 });
 
-App.MapView = Ember.View.extend({
-  scale: 0.5,
-  content: null,
-  markerStyle: function() {
-    
-    var x = this.get("scale") * this.getPath("content.position.x"),
-        y = this.get("scale") * this.getPath("content.position.y");
+App.stateManager = Ember.StateManager.create({
+  initialState: 'searchPage',
+
+  searchPage: Ember.ViewState.create({
+    view: Ember.View.create({
+      templateName: "search"
+    })
+  }),
+ 
+  resultsPage: Ember.ViewState.create({
+    view: Ember.View.create({
+      templateName: "results"
+    }),
+  }),
+
+  noResultsPage: Ember.ViewState.create({
+    view: Ember.View.create({
+      templateName: "no-results"
+    })
+  }),
+  
+  mapPage: Ember.ViewState.create({
+    view: Ember.View.create({
+      templateName: "map",
+      contentBinding: "App.resultsController.selected",
+      scale: 0.5,
+      markerStyle: function() {
         
-    return "position: absolute; top: %@px; left: %@px".fmt(x,y);
-  }.property("content", "scale")
+        var x = this.get("scale") * this.getPath("content.position.x"),
+            y = this.get("scale") * this.getPath("content.position.y");
+              
+        return "position: absolute; top: %@px; left: %@px".fmt(x,y);
+      }.property("content", "scale")
+    })
+  }),
+  search: function(manager, context) {
+    App.searchController.search();
+  },
+  noResults: function(manager, context) {
+    manager.goToState("noResultsPage");
+  }
 });
+
 
