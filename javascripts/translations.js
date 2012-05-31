@@ -25,7 +25,9 @@ I18n.translations = {
       plate: "License Plate"      
     },
     map: {
-      heading: "Map", info: "Your vehicle is parked on"
+      heading: "Map",
+      origin: { heading: "You", info: "You are currently located in" },
+      destination: { heading: "Your Car", info: "Your vehicle is parked on" }
     },
     noResults: {
       heading: "Unfortunately, we could not locate your vehicle",
@@ -62,7 +64,9 @@ I18n.translations = {
       plate: "Patente"      
     },
     map: {
-      heading: "Mapa", info: "Su vehículo se encuentra estacionado en "
+      heading: "Mapa",
+      origin: { },
+      destination: { info: "Su vehículo se encuentra estacionado en " }
     },
     noResults: {
       heading: "Lamentablemente no encontramos su vehículo",
