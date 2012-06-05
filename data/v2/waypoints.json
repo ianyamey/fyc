@@ -1,6 +1,0 @@
-[
-{"id":1,"map":{"id":11,"name":"Level-1"},"name":"Kiosk 1","position":{"x":18,"y":283}},
-{"id":2,"map":{"id":14,"name":"Level-3"},"name":"Kiosk 2","position":{"x": 15,"y":240}},
-{"id":3,"map":{"id":11,"name":"Level-3"},"name":"Kiosk 3","position":{"x":406,"y":302}},
-{"id":4,"map":{"id":11,"name":"Level-3"},"name":"Kiosk 4","position":{"x":106,"y":32}}
-]

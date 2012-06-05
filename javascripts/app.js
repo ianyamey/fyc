@@ -36,27 +36,44 @@ var App = Ember.Application.create({
   host: "data",//"http://10.99.3.1", //"data",
   minimumSimilarity: 0.5,
   minimumSearchLength: 2,
-  maximumResults: 4,
+  maximumResults: 3,
   searchTimeout: 8000,
+  mapScale: 0.5,
+  waypointId: 1, // The id of the PASEServer waypoint
   ready: function() {
-    $("#loadingModal").modal({backdrop: "static", keyboard: false, show: false});
+    
     $("body").disableSelection();
+    
+    App.mapController.findWaypoints();
+  }
+  
+  
+});
+
+App.Marker = Ember.Object.extend({
+  mapUrl: function() {
+    return App.host + "/v2/maps/" + this.getPath("map.name") + ".png";
+  }.property('map.name'),
+  mapWidth: 0,
+  init: function() {
+    this._super();
+    var img = new Image();
+    var self = this;
+    img.onload = function() {
+      self.set("mapWidth",this.width);
+    };
+    img.src = this.get("mapUrl");
   }
 });
 
-App.Destination = Ember.Object.extend({
+App.Destination = App.Marker.extend({
   imageUrl: function() {
     return App.host + "/v2/visits/" + this.getPath("visit.id") + "/entry.jpg";
-  }.property('visit.id'),
-  mapUrl: function() {
-    return App.host + "/v2/maps/" + this.getPath("map.name") + ".png";
-  }.property('map.name')
+  }.property('visit.id')
 });
 
-App.Origin = Ember.Object.extend({
-  mapUrl: function() {
-    return App.host + "/v2/maps/" + this.getPath("map.name") + ".png";
-  }.property('map.name')
+App.Origin = App.Marker.extend({
+
 });
 
 App.searchController = Ember.ArrayController.create({
@@ -67,6 +84,17 @@ App.searchController = Ember.ArrayController.create({
   isInvalid: function() {
     return this.get('searchText').length < App.minimumSearchLength;
   }.property('searchText'),
+  
+  loading: function() {
+    var m = $("#loadingModal").modal({backdrop: "static", keyboard: false, show: false});
+    
+    if (this.get("isLoading")) {
+      m.modal("show");
+    } else {
+      m.modal("hide");
+    }
+  }.observes("isLoading"),
+  
   similarity: function() {
     return (this.get('searchText').length < 4) ? App.minimumSimilarity / 2 : App.minimumSimilarity;
   }.property('searchText'),
@@ -75,9 +103,7 @@ App.searchController = Ember.ArrayController.create({
   }.property(),
   search: function(callback){
     var self = this;
-    if (this.get("isInvalid")) {
-      return;
-    }
+    if (this.get("isInvalid")) { return; }
     self.set("isLoading", true);
     self.set("isError", false);
     
@@ -135,7 +161,7 @@ App.mapController = Ember.Object.create({
 
     self.set("isLoading", true);
         
-    var waypointsUrl = /* App.host */ "data" + "/v2/waypoints.json";
+    var waypointsUrl = /* App.host */ "data" + "/v2/waypoints/"+ App.waypointId +".json";
     
     $.ajax({
       dataType: 'json',
@@ -146,15 +172,7 @@ App.mapController = Ember.Object.create({
       beforeSend: function () { },
       complete: function() { self.set("isLoading", false); },
       success: function (data) {
-        var results = [];
-        $.each(data, function() {
-          results.push(self.createOriginFromJSON(this));
-        });
-        if (results.length >= 1) {
-          // TODO: load this from app config
-          var current = 2;
-          self.set('origin', results[current]);
-        }
+        self.set('origin', self.createOriginFromJSON(data));
       }
     });
   },
@@ -188,15 +206,25 @@ App.ResultView = Ember.View.extend({
 });
 
 App.MapView = Ember.View.extend({
-  scale: 0.35,
+  didInsertElement: function() {    
+    // Set the width once the view has been rendered
+    var container = "#"+this.get("elementId");
+    this.set('width', jQuery(container).width());
+  },
+  width: null,
+  scale: function() {
+    var usableWidth = this.get("width");
+    var mapWidth = this.getPath('content.mapWidth');
+    return (mapWidth > 0 ? usableWidth / mapWidth : 1);
+  }.property('content.mapWidth','width'),
   mapStyle: function() {
-    return "";
-  }.property(),
+    return "width: %@px".fmt(this.get("width"));
+  }.property("width"),
   markerStyle: function() {
     var x = this.get("scale") * this.getPath("content.position.x"),
         y = this.get("scale") * this.getPath("content.position.y");
 
-    return "position: absolute; top: %@px; left: %@px".fmt(x,y);
+    return "position: absolute; left: %@px; top: %@px".fmt(Math.round(x),Math.round(y));
   }.property("content", "scale")
 });
 
@@ -233,11 +261,8 @@ App.stateManager = Ember.StateManager.create({
   }),
   search: function(manager, context) {
     App.searchController.search();
-    App.mapController.findWaypoints();
   },
   noResults: function(manager, context) {
     manager.goToState("noResultsPage");
   }
 });
-
-

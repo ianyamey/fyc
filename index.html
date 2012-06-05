@@ -25,6 +25,22 @@
       </div>
     </div>
   </div>
+  
+      {{#with App.searchController}}
+    <div id="loadingModal" {{bindAttr class="isLoading"}}>
+      <div class="modal">
+        <div class="modal-header">
+          <h3>{{t loading.heading}}</h3>
+        </div>
+        <div class="modal-body">
+          <p>{{t loading.text }} '{{searchText}}'</p>
+          <p class="loading"></p>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  {{/with}}
   </script>
 
   <script type="text/x-handlebars" data-template-name="layout">
@@ -91,38 +107,23 @@
       <button {{action "search" target="App.stateManager" }} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-success btn-large">
         <i class="icon-search icon-white"></i> {{t search.button }} &rarr;
       </button>
-    </div>      
-  
-    {{#with App.searchController}}
-    <div id="loadingModal" {{bindAttr class="isLoading"}}>
-      <div class="modal">
-        <div class="modal-header">
-          <h3>{{t loading.heading}}</h3>
-        </div>
-        <div class="modal-body">
-          <p>{{t loading.text }} '{{searchText}}'</p>
-          <p class="loading"></p>
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
     </div>
-  {{/with}}    
   </script> 
   
   <script type="text/x-handlebars" data-template-name="results">
     <h1>{{t results.heading}}</h1>
     <p class="alert alert-info">{{t results.instructions }}. {{t results.searchQuery}}: {{App.resultsController.searchText}}</p>
 
-    <ol class="results row-fluid">
+    <ol class="results row">
       {{#each App.resultsController}}
         <li class="span4">
           <div class="well">
+          
             {{#view App.ResultView contentBinding="this" class="result"}}
               <h3>{{content.visit.plate.text}}</h3>
               <div class="result-header">
                 <!--span class="label label-inverse">{{t labels.result}} {{adjustedIndex}}</span-->
-                <span class="label label-success">{{t labels.location}}: {{content.zone.name}}</span>
+                <span class="label label-success">{{t labels.location}}: {{content.map.name}}</span>
               </div>
               <img {{bindAttr src="content.imageUrl"}}/>
               <div class="result-footer">
@@ -155,7 +156,7 @@
         <div class="span6">
           <div class="well">
             <h3>{{t map.destination.heading}}</h3>
-            <p class="alert alert-info">{{t map.destination.info}} <span class="label">{{destination.zone.name}}</span></p>
+            <p class="alert alert-info">{{t map.destination.info}} <span class="label">{{destination.map.name}}</span></p>
             {{#view App.MapView contentBinding="destination"}}
               <div class="map" {{bindAttr style="view.mapStyle"}}>
                 <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/car.png"/></div>
