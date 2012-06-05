@@ -16,7 +16,7 @@ body { text-align: center; padding-top: 78px; }
 .navbar .btn { margin-top: 14px; }
 
 .map .marker {  }
-.map .marker img { left: -10px; top: -37px; width: 40px; position: absolute; }
+.map .marker img { left: -26px; top: -64px; width: 52px; height: 64px; position: absolute; }
 .pulsate {
     border: 3px solid #999;
     -webkit-border-radius: 30px;

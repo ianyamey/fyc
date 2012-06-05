@@ -139,14 +139,14 @@
   
   <script type="text/x-handlebars" data-template-name="map">
     {{#with App.mapController}}
-      <div class="row-fluid">      
+      <div class="row-fluid">
         <div class="span6">
-          <div class="well">
-            <h3>{{t map.origin.heading}}</h3>
-            <p class="alert alert-info">{{t map.origin.info}} <span class="label">{{origin.map.name}}</span></p>
+          <h3>{{t map.origin.heading}}</h3>
+          <div class="well alert-info">
+            <p>{{t map.origin.info}} <span class="label">{{origin.map.name}}</span></p>
             {{#view App.MapView contentBinding="origin"}}
               <div class="map" {{bindAttr style="view.mapStyle"}}>
-                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/human.png"/></div>
+                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/blue_walk.png"/></div>
                 <img {{bindAttr src="content.mapUrl"}}/>
               </div>
             {{/view}}
@@ -154,12 +154,12 @@
         </div>
         
         <div class="span6">
-          <div class="well">
-            <h3>{{t map.destination.heading}}</h3>
-            <p class="alert alert-info">{{t map.destination.info}} <span class="label">{{destination.map.name}}</span></p>
+          <h3>{{t map.destination.heading}}</h3>
+          <div class="well alert-success">
+            <p>{{t map.destination.info}} <span class="label">{{destination.map.name}}</span></p>
             {{#view App.MapView contentBinding="destination"}}
               <div class="map" {{bindAttr style="view.mapStyle"}}>
-                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/car.png"/></div>
+                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/green_car.png"/></div>
                 <img {{bindAttr src="content.mapUrl"}}/>
               </div>
             {{/view}}
