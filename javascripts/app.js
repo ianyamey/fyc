@@ -10,9 +10,11 @@ Handlebars.registerHelper('t', function(str){
   return (I18n !== undefined ? I18n.t(str) : str);
 });
 
+/* v1.3 */
+/* https://github.com/farinspace/jquery.imgpreload */
+if("undefined"!=typeof jQuery){(function(a){a.imgpreload=function(b,c){c=a.extend({},a.fn.imgpreload.defaults,c instanceof Function?{all:c}:c);if("string"==typeof b){b=new Array(b)}var d=new Array;a.each(b,function(e,f){var g=new Image;var h=f;var i=g;if("string"!=typeof f){h=a(f).attr("src");i=f}a(g).bind("load error",function(e){d.push(i);a.data(i,"loaded","error"==e.type?false:true);if(c.each instanceof Function){c.each.call(i)}if(d.length>=b.length&&c.all instanceof Function){c.all.call(d)}});g.src=h})};a.fn.imgpreload=function(b){a.imgpreload(this,b);return this};a.fn.imgpreload.defaults={each:null,all:null}})(jQuery)}
 
 (function($){
-
 $.fn.disableSelection = function() {
     return this.each(function() {           
         $(this).attr('unselectable', 'on')
@@ -27,13 +29,12 @@ $.fn.disableSelection = function() {
                });
     });
 };
-
 })(jQuery);
 
 
 var App = Ember.Application.create({
-  host: "data",
-  minimumSimilarity: 0.6,
+  host: "data",//"http://10.99.3.1", //"data",
+  minimumSimilarity: 0.5,
   minimumSearchLength: 2,
   maximumResults: 4,
   searchTimeout: 8000,
@@ -67,39 +68,49 @@ App.searchController = Ember.ArrayController.create({
     return this.get('searchText').length < App.minimumSearchLength;
   }.property('searchText'),
   similarity: function() {
-    return (this.get('searchText').length < 4) ? 0.4 : App.minimumSimilarity;
-  },
+    return (this.get('searchText').length < 4) ? App.minimumSimilarity / 2 : App.minimumSimilarity;
+  }.property('searchText'),
   limit: function() {
     return App.maximumResults;
-  },
+  }.property(),
   search: function(callback){
     var self = this;
     if (this.get("isInvalid")) {
       return;
     }
     self.set("isLoading", true);
-        
+    self.set("isError", false);
+    
     var baysUrl = App.host + "/v2/bays.json?visit.plate.text=" + this.get("searchText") + "~" + this.get("similarity") + "&is_occupied=true&order=-similarity&limit=" + this.get("limit");
     
     $.ajax({
-      dataType: 'json',
       url: baysUrl,
       crossDomain: true,
       timeout: App.searchTimeout,
-      error: function () { },
+      error: function () { self.set("isLoading", false); self.set("isError", true); },
       beforeSend: function () { },
-      complete: function() { self.set("isLoading", false); },
+      complete: function() {  },
       success: function (data) {
         var results = [];
+        var preloadQueue = [];
         $.each(data, function() {
-          results.push(self.createDestinationFromJSON(this));
+          var result = self.createDestinationFromJSON(this);
+          results.push(result);
+          preloadQueue.push(result.get("imageUrl"));
         });
         if (results.length >= 1) {
           App.resultsController.set('content', results);
-          App.stateManager.goToState('resultsPage');
+          
+          $.imgpreload(preloadQueue, function() {
+            self.set("isLoading", false);
+            App.stateManager.goToState('resultsPage');
+          });
+          
         } else {
           App.stateManager.goToState('noResultsPage');
+          self.set("isLoading", false);
         }
+        
       }
     });
   },
@@ -124,7 +135,7 @@ App.mapController = Ember.Object.create({
 
     self.set("isLoading", true);
         
-    var waypointsUrl = App.host + "/v2/waypoints.json";
+    var waypointsUrl = /* App.host */ "data" + "/v2/waypoints.json";
     
     $.ajax({
       dataType: 'json',
@@ -177,7 +188,10 @@ App.ResultView = Ember.View.extend({
 });
 
 App.MapView = Ember.View.extend({
-  scale: 0.5,
+  scale: 0.35,
+  mapStyle: function() {
+    return "";
+  }.property(),
   markerStyle: function() {
     var x = this.get("scale") * this.getPath("content.position.x"),
         y = this.get("scale") * this.getPath("content.position.y");

@@ -26,7 +26,7 @@ I18n.translations = {
     },
     map: {
       heading: "Map",
-      origin: { heading: "You", info: "You are currently located in" },
+      origin: { heading: "You", info: "You are currently located on" },
       destination: { heading: "Your Car", info: "Your vehicle is parked on" }
     },
     noResults: {

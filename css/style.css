@@ -2,27 +2,47 @@ body { text-align: center; padding-top: 78px; }
 @media (max-width: 980px) { body { padding-top: 0; } }
 .content h1 { padding-bottom: 18px; }
 #loadingModal { display: none; }
-#loadingModal.is-searching { display: block; }
+#loadingModal.is-loading { display: block; }
 .loading { margin: 0 auto; background-image: url(../img/ajax-loader.png); width: 35px; height: 35px; -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; background-size: 35px 35px; display: block; -webkit-transform: rotate(360deg); -webkit-animation-name: spin; -webkit-animation-duration: 1s; -webkit-animation-iteration-count: infinite; -webkit-animation-timing-function: linear; }
 @-webkit-keyframes spin { 
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); }
 }
 
-.logo { height: 108px; margin-top: 18px; }
+#logo { height: 44px; float:left; margin: 8px 18px 8px 0px; }
 
 .navbar-inner { height: 60px }
-.navbar .brand { font-size: 36px; }
+.navbar h1 { font-size: 32px; float: left; line-height: 60px; font-weight: normal; letter-spacing: -1px;}
 .navbar .btn { margin-top: 14px; }
 
-.marker { width: 40px; }
-.marker img { margin-left: -10px; margin-top: -37px; }
-.map { position: relative; text-align: left; }
+.map .marker {  }
+.map .marker img { left: -10px; top: -37px; width: 40px; position: absolute; }
+.pulsate {
+    border: 3px solid #999;
+    -webkit-border-radius: 30px;
+    height: 18px;
+    width: 18px;
+    left:-12px;
+    top:-12px;
+    position: absolute;
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+@-webkit-keyframes pulsate {
+    0% {-webkit-transform: scale(0, 0); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
+
+
+
+.map { position: relative; text-align: left; display: inline-block; }
+.map img { width: 504px }
 ul,ol { text-align: left; }
 .search input { padding: 9px 14px; font-size: 15px; line-height: normal; }
 .keyboard { padding-bottom: 18px; }
 .keyboard button { min-width: 42px; min-height: 42px; }
-.map { display: inline-block; }
 .map canvas,.map svg { position: absolute; width: 100%; height: 100%; }
 .results { position: relative; list-style-type: none; }
 .result .result-header { position: absolute; }

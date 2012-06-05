@@ -19,7 +19,8 @@
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <h1 class="brand" href="#">{{t app.name}}</h1>
+        <img id="logo" src="img/logo-horizontal.png"/>
+        <h1 href="#">{{t app.name}}</h1>
         <a class="btn btn-danger pull-right" href="index.html"><i class="icon-white icon-refresh"></i> {{t search.new}}</a>
       </div>
     </div>
@@ -30,8 +31,6 @@
     <div class="container content">
       {{yield}}
     </div>
-    
-    <img class="logo" src="img/logo.png">
   </script>
   
   <script type="text/x-handlebars" data-template-name="search">
@@ -88,32 +87,34 @@
     {{/view}}
     
     <div class="form-vertical form-search well search">
-      <input type="text" class="search-query" {{bindAttr value="App.searchController.searchText"}} placeholder="{{t search.placeholder}}"/>
+      {{view Ember.TextField valueBinding="App.searchController.searchText"  class="search-query"}}
       <button {{action "search" target="App.stateManager" }} {{bindAttr disabled="App.searchController.isInvalid"}} class="btn btn-success btn-large">
         <i class="icon-search icon-white"></i> {{t search.button }} &rarr;
       </button>
-    </div> 
-    
-    <div id="loadingModal" {{bindAttr class="App.searchController.isLoading"}}>
+    </div>      
+  
+    {{#with App.searchController}}
+    <div id="loadingModal" {{bindAttr class="isLoading"}}>
       <div class="modal">
         <div class="modal-header">
           <h3>{{t loading.heading}}</h3>
         </div>
         <div class="modal-body">
-          <p>{{t loading.text }} '{{App.searchController.searchText}}'</p>
+          <p>{{t loading.text }} '{{searchText}}'</p>
           <p class="loading"></p>
         </div>
         <div class="modal-footer">
         </div>
       </div>
     </div>
+  {{/with}}    
   </script> 
   
   <script type="text/x-handlebars" data-template-name="results">
     <h1>{{t results.heading}}</h1>
     <p class="alert alert-info">{{t results.instructions }}. {{t results.searchQuery}}: {{App.resultsController.searchText}}</p>
 
-    <ol class="results row">
+    <ol class="results row-fluid">
       {{#each App.resultsController}}
         <li class="span4">
           <div class="well">
@@ -137,15 +138,14 @@
   
   <script type="text/x-handlebars" data-template-name="map">
     {{#with App.mapController}}
-      <h1>{{t map.heading}}</h1>
-      <div class="row">      
+      <div class="row-fluid">      
         <div class="span6">
           <div class="well">
             <h3>{{t map.origin.heading}}</h3>
-            <p class="alert alert-info">{{t map.origin.info}} <span class="label">{{origin.zone.name}}</span></p>
+            <p class="alert alert-info">{{t map.origin.info}} <span class="label">{{origin.map.name}}</span></p>
             {{#view App.MapView contentBinding="origin"}}
-              <div class="map">
-                <div class="marker" {{bindAttr style="view.markerStyle"}}><img src="img/human.png"/></div>
+              <div class="map" {{bindAttr style="view.mapStyle"}}>
+                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/human.png"/></div>
                 <img {{bindAttr src="content.mapUrl"}}/>
               </div>
             {{/view}}
@@ -157,8 +157,8 @@
             <h3>{{t map.destination.heading}}</h3>
             <p class="alert alert-info">{{t map.destination.info}} <span class="label">{{destination.zone.name}}</span></p>
             {{#view App.MapView contentBinding="destination"}}
-              <div class="map">
-                <div class="marker" {{bindAttr style="view.markerStyle"}}><img src="img/car.png"/></div>
+              <div class="map" {{bindAttr style="view.mapStyle"}}>
+                <div class="marker" {{bindAttr style="view.markerStyle"}}><span class="pulsate"/><img src="img/car.png"/></div>
                 <img {{bindAttr src="content.mapUrl"}}/>
               </div>
             {{/view}}
@@ -184,7 +184,7 @@
   
   <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
   <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
-  <script type='text/javascript' src="http://cloud.github.com/downloads/emberjs/ember.js/ember-latest.js"></script>
+  <script type='text/javascript' src="https://github.com/downloads/emberjs/ember.js/ember-0.9.8.1.min.js"></script>
   <script type='text/javascript' src="https://raw.github.com/fnando/i18n-js/master/vendor/assets/javascripts/i18n.js"></script>
   <script type='text/javascript' src="javascripts/translations.js"></script>
   <script type='text/javascript' src="javascripts/app.js"></script>
