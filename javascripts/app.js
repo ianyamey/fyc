@@ -176,6 +176,10 @@ App.mapController = Ember.Object.create({
       }
     });
   },
+  onSameMap: function() {
+    console.log(this.getPath("destination.map.name"), this.get("destination"))
+    return this.getPath("destination.map.name") == this.getPath("origin.map.name");
+  }.property("destination", "origin"),
   createOriginFromJSON: function(json) {
     return App.Origin.create(json);
   }
@@ -219,13 +223,16 @@ App.MapView = Ember.View.extend({
   }.property('content.mapWidth','width'),
   mapStyle: function() {
     return "width: %@px".fmt(this.get("width"));
-  }.property("width"),
-  markerStyle: function() {
-    var x = this.get("scale") * this.getPath("content.position.x"),
-        y = this.get("scale") * this.getPath("content.position.y");
+  }.property("width")
+});
+
+App.MarkerView = Ember.View.extend({
+  style: function() {
+    var x = this.getPath("parentView.scale") * this.getPath("content.position.x"),
+        y = this.getPath("parentView.scale") * this.getPath("content.position.y");
 
     return "position: absolute; left: %@px; top: %@px".fmt(Math.round(x),Math.round(y));
-  }.property("content", "scale")
+  }.property("content", "parentView.scale")
 });
 
 App.stateManager = Ember.StateManager.create({
@@ -256,7 +263,8 @@ App.stateManager = Ember.StateManager.create({
     view: Ember.View.create({
       templateName: "map",
       layoutName: "layout",
-      contentBinding: "App.resultsController.selected"
+
+      
     })
   }),
   search: function(manager, context) {
