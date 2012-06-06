@@ -1,8 +1,7 @@
 body { text-align: center; padding-top: 78px; }
 @media (max-width: 980px) { body { padding-top: 0; } }
 .content h1 { padding-bottom: 18px; }
-#loadingModal { display: none; }
-#loadingModal.is-loading { display: block; }
+#loadingModal, #errorModal { display: none; }
 .loading { margin: 0 auto; background-image: url(../img/ajax-loader.png); width: 35px; height: 35px; -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; background-size: 35px 35px; display: block; -webkit-transform: rotate(360deg); -webkit-animation-name: spin; -webkit-animation-duration: 1s; -webkit-animation-iteration-count: infinite; -webkit-animation-timing-function: linear; }
 @-webkit-keyframes spin { 
   from { -webkit-transform: rotate(0deg); }

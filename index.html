@@ -21,13 +21,12 @@
       <div class="container">
         <img id="logo" src="img/logo-horizontal.png"/>
         <h1 href="#">{{t app.name}}</h1>
-        <a class="btn btn-danger pull-right" href="index.html"><i class="icon-white icon-refresh"></i> {{t search.new}}</a>
+        <a class="btn btn-danger pull-right" href="index.html"><i class="icon-white icon-refresh"></i> {{t search.restart}}</a>
       </div>
     </div>
   </div>
-  
-      {{#with App.searchController}}
-    <div id="loadingModal" {{bindAttr class="isLoading"}}>
+  {{#with App.searchController}}
+    <div id="loadingModal">
       <div class="modal">
         <div class="modal-header">
           <h3>{{t loading.heading}}</h3>
@@ -37,6 +36,21 @@
           <p class="loading"></p>
         </div>
         <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  {{/with}}  
+  {{#with App.searchController}}
+    <div id="errorModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>{{t error.heading}}</h3>
+        </div>
+        <div class="modal-body">
+          <p>{{t error.text }}</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-primary" data-dismiss="modal">{{t error.ok}}</a>
         </div>
       </div>
     </div>
@@ -134,7 +148,7 @@
         </li>
       {{/each}}
     </ol>
-    <button {{action "noResults" target="App.stateManager"}} class="btn btn-warning">{{t results.reject}}</button>
+    <button {{action "noResults" target="App.stateManager"}} class="btn btn-large btn-warning">{{t results.reject}}</button>
   </script>
   
   <script type="text/x-handlebars" data-template-name="map">
@@ -213,6 +227,7 @@
   
   <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
   <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+  <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
   <script type='text/javascript' src="https://github.com/downloads/emberjs/ember.js/ember-0.9.8.1.min.js"></script>
   <script type='text/javascript' src="https://raw.github.com/fnando/i18n-js/master/vendor/assets/javascripts/i18n.js"></script>
   <script type='text/javascript' src="javascripts/translations.js"></script>

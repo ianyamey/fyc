@@ -9,9 +9,10 @@ I18n.translations = {
       instructions: "Search for your vehicle by typing in your license plate below",
       placeholder: "Enter your License Plate",
       button: "Search",
-      new: "New Search"
+      restart: "New Search"
     },
     loading: { heading: "Loading&hellip;", text: "Searching for vehicles with license plate similar to "},
+    error: { heading: "Error", text: "There was an error accessing the server. Please try again.", ok: "Ok"},
     results: { 
       heading: "Results",
       instructions: "Select your vehicle from the matches below",
@@ -48,9 +49,10 @@ I18n.translations = {
       instructions: "Introduzca su patente debajo para buscar su vehículo ",
       placeholder: "Ingrese su patente",
       button: "Buscar",
-      new: "Nueva Búsqueda"
+      restart: "Nueva Búsqueda"
     },
     loading: { heading: "Cargando&hellip;", text: "Buscando vehículos con patentes similares a "},
+    error: {},
     results: { 
       heading: "Resultados",
       instructions: "Seleccione su vehículo",
@@ -65,8 +67,8 @@ I18n.translations = {
     },
     map: {
       heading: "Mapa",
-      origin: { },
-      destination: { info: "Su vehículo se encuentra estacionado en " }
+      origin: { heading: "You", info: "You are currently located on" },
+      destination: { heading: "Su vehículo", info: "Su vehículo se encuentra estacionado en " }
     },
     noResults: {
       heading: "Lamentablemente no encontramos su vehículo",

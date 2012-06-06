@@ -113,7 +113,10 @@ App.searchController = Ember.ArrayController.create({
       url: baysUrl,
       crossDomain: true,
       timeout: App.searchTimeout,
-      error: function () { self.set("isLoading", false); self.set("isError", true); },
+      error: function () { 
+        self.set("isLoading", false); self.set("isError", true);
+        $("#errorModal").modal({backdrop: "static", keyboard: true, show: true});
+      },
       beforeSend: function () { },
       complete: function() {  },
       success: function (data) {
@@ -128,8 +131,8 @@ App.searchController = Ember.ArrayController.create({
           App.resultsController.set('content', results);
           
           $.imgpreload(preloadQueue, function() {
-            self.set("isLoading", false);
             App.stateManager.goToState('resultsPage');
+            self.set("isLoading", false);
           });
           
         } else {
